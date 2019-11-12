@@ -1,0 +1,52 @@
+{
+  "name": "apiTeamwork",
+  "version": "1.0.0",
+  "description": "This is a project from the DEVCWITHANDELA PROGRAM ....Teamwork is an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel server.js --out-dir build",
+    "devstart": "babel-watch server.js",
+    "devstart2": "nodemon server.js",
+    "mochaTest": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phawazzzy/apiTeamwork.git"
+  },
+  "keywords": [
+    "teamwork",
+    "collaboration"
+  ],
+  "author": "KAREEM FAWAS OLAMILEKAN",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phawazzzy/apiTeamwork/issues"
+  },
+  "homepage": "https://github.com/phawazzzy/apiTeamwork#readme",
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-watch": "^7.0.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "jasmine": "^3.5.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "hpp": "^0.2.2",
+    "make-runnable": "^1.3.6",
+    "moment": "^2.24.0",
+    "pg": "^7.12.1",
+    "request": "^2.88.0",
+    "url": "^0.11.0",
+    "uuid": "^3.3.3"
+  }
+}
