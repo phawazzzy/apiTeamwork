@@ -15,17 +15,17 @@ class UserModel {
     }
   }
 
-  // static async getUser(user) {
-  //   const getUserQuery = 'SELECT "id", "isadmin", "firstname", "lastname", "email", "password", "gender", "jobrole", "department", "address" FROM users WHERE "id" = $1';
-  //   const values = [`${user}`];
+  static async getUser(user) {
+    const getUserQuery = 'SELECT "id", "isadmin", "firstname", "lastname", "email", "password", "gender", "jobrole", "department", "address" FROM users WHERE email = $1';
+    const values = [user];
 
-  //   try {
-  //     const result = await pool.query(getUserQuery, values);
-  //     return result;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+    try {
+      const result = await pool.query(getUserQuery, values);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserModel;

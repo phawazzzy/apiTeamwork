@@ -1,9 +1,10 @@
+/* eslint-disable consistent-return */
 const {
   check,
   validationResult
 } = require('express-validator');
 const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const userModel = require('../model/user');
 
 // eslint-disable-next-line consistent-return
@@ -53,11 +54,13 @@ exports.signup = async (req, res) => {
     password: hash,
   };
   console.log(newUser);
+  const token = jwt.sign({ newUser }, process.env.secretKey, { expiresIn: '1h' });
   try {
     const save = await userModel.addUser(newUser);
     if (save) {
       res.status(201).json({
         status: 'success',
+        token,
         message: 'User account successfully created',
         data: save.rows
       });
@@ -70,16 +73,63 @@ exports.signup = async (req, res) => {
   }
 };
 
-// exports.signin = async (req, res) => {
-//   const dataToValidate = [
-//     check(req.body.email).isEmail(),
-//     check(req.body.password).isLength({ min: 6 }),
-//   ];
-//   const errors = validationResult(dataToValidate);
-//   if (errors) {
-//     res.status(400).json({ message: 'incorrect format of parameters' });
-//   }
-//   const loginDetails = {
-//     email: req.body.body.email,
-//   }
-// }
+exports.signin = async (req, res) => {
+  const dataToValidate = [
+    check(req.body.email).isEmail(),
+    check(req.body.password).isLength({ min: 6 }),
+  ];
+  const errors = validationResult(dataToValidate);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ message: 'incorrect format of parameters' });
+  }
+  const loginDetails = {
+    email: req.body.email,
+    password: req.body.password
+  };
+  console.log(loginDetails);
+  // eslint-disable-next-line no-useless-catch
+  try {
+    await userModel.getUser(loginDetails.email)
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({
+            message: 'user not found'
+          });
+        }
+        bcrypt.compare(req.body.password, user.rows[0].password, (err, result) => {
+          if (err) {
+            return res.status(401).json({
+              message: 'incorrect password'
+            });
+          }
+          if (result) {
+            const token = jwt.sign({
+              email: user.rows[0].email,
+              password: user.rows[0].id
+            }, process.env.secretKey, { expiresIn: '1h' });
+            return res.status(200).json({
+              message: 'login succesful',
+              token,
+              data: {
+                id: user.rows[0].id,
+                firstName: user.rows[0].firstname,
+                lastName: user.rows[0].lastname
+              }
+            });
+          }
+          res.status(401).json({
+            message: 'auth failed'
+          });
+        });
+      })
+      .catch((err) => {
+        console.log('i am here');
+        res.status(500).json({
+          error: err
+        });
+      });
+  } catch (err) {
+    console.log('i am the errooorr');
+    throw err;
+  }
+};

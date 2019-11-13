@@ -6,6 +6,7 @@ const url = require('url');
 const hpp = require('hpp');
 
 const userRoutes = require('./routes/user');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
