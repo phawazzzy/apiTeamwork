@@ -107,7 +107,7 @@ exports.signin = async (req, res) => {
               email: user.rows[0].email,
               password: user.rows[0].id
             }, process.env.secretKey, { expiresIn: '1h' });
-            return res.status(200).json({
+            return res.status(201).json({
               message: 'login succesful',
               token,
               data: {
