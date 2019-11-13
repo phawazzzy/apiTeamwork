@@ -2,9 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+const userController = require('../controllers/userControllers');
+
+router.get('/', (req, res) => {
   res.send('hello world');
 });
+
+router.post('/auth/create-user', userController.signup);
 
 
 module.exports = router;
