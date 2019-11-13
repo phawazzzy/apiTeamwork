@@ -1,21 +1,12 @@
-const { Pool } = require('pg');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-const pool = new Pool({
-  connectionString: process.env.DB_URL,
-});
-
-pool.on('connect', () => {
-  console.log('connected to the db');
-});
+const pool = require('./config/config');
 
 const createUsersTables = () => {
   const queryText = `CREATE TABLE IF NOT EXISTS
     users(
-        id UUID PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
+        isAdmin BOOLEAN NOT NULL DEFAULT FALSE,
         firstName VARCHAR(128) NOT NULL,
+        lastName VARCHAR(128) NOT NULL,
         email VARCHAR(128) NOT NULL UNIQUE,
         password VARCHAR(128) NOT NULL,
         gender VARCHAR(128) NOT NULL,
