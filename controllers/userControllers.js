@@ -1,4 +1,7 @@
-const { check, validationResult } = require('express-validator');
+const {
+  check,
+  validationResult
+} = require('express-validator');
 const bcrypt = require('bcrypt');
 // const jwt = require('jsonwebtoken');
 const userModel = require('../model/user');
@@ -7,18 +10,32 @@ const userModel = require('../model/user');
 exports.signup = async (req, res) => {
   const dataToValidate = [
     check(req.body.isAdmin).isBoolean(),
-    check(req.body.firstName).isLength({ min: 3 }).isAlpha(),
-    check(req.body.lastName).isLength({ min: 3 }),
+    check(req.body.firstName).isLength({
+      min: 3
+    }).isAlpha(),
+    check(req.body.lastName).isLength({
+      min: 3
+    }),
     check(req.body.email).isEmail(),
     check(req.body.gender).isIn(['male', 'female']),
-    check(req.body.jobRole).isLength({ min: 2 }),
-    check(req.body.department).isLength({ min: 2 }),
-    check(req.body.address).isLength({ min: 2 }),
-    check(req.body.password).isLength({ min: 6 }),
+    check(req.body.jobRole).isLength({
+      min: 2
+    }),
+    check(req.body.department).isLength({
+      min: 2
+    }),
+    check(req.body.address).isLength({
+      min: 2
+    }),
+    check(req.body.password).isLength({
+      min: 6
+    }),
   ];
   const errors = validationResult(dataToValidate);
   if (!errors.isEmpty()) {
-    res.status(400, errors.msg);
+    res.status(400).json({
+      error: errors.msg
+    });
     return res.status(201).json({
       message: 'all data has passed validator'
     });
@@ -36,14 +53,21 @@ exports.signup = async (req, res) => {
     password: hash,
   };
   console.log(newUser);
-  const save = await userModel.addUser(newUser);
-  if (save) {
-    res.status(201).json({
-      message: 'User account successfully created',
-      result: save.rows
+  try {
+    const save = await userModel.addUser(newUser);
+    if (save) {
+      res.status(201).json({
+        status: 'success',
+        message: 'User account successfully created',
+        data: save.rows
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      status: 'error',
+      message: `error ${error} occured when trying to signup`
     });
   }
-  return res.status(400).json({ message: 'error while saving user' });
 };
 
 // exports.signin = async (req, res) => {
