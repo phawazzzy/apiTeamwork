@@ -42,7 +42,7 @@ exports.signup = async (req, res) => {
   }
   const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8));
   const newUser = {
-    isAdmin: req.body.isAdmin,
+    isAdmin: false,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
