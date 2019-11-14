@@ -40,6 +40,7 @@ describe('Auth endpoint', () => {
 
   describe('this test for the signUp', () => {
     it('should log the user in', () => {
+      // eslint-disable-next-line no-unused-vars
       const userDetails = {
         email: 'phawazzzy@gmail.com',
         password: 'Hardemola29'
