@@ -19,17 +19,17 @@ describe('Auth endpoint', () => {
         gender: 'male',
         jobRole: 'deveoper',
         department: 'tech',
-        address: '5 oyinbo street, abuja'
+        address: '5 oyinbo street, abuja',
+        isAdmin: true
       };
       chai.request(app)
         .post('/api/v1/auth/create-user')
         .set('Accept', 'application/json')
         .send(user)
         .then((res) => {
+          expect(res.body).to.be.an('object');
           expect(res.status).to.equal(201);
-          expect(res.body.data).to.include({
-            message: 'User account is succesfully created'
-          });
+          expect(res.body.data).to.have.property('firstName');
         })
         .catch((err) => {
           throw err;
@@ -50,11 +50,12 @@ describe('Auth endpoint', () => {
         .set('Accept', 'application/json')
         .send(userDetails)
         .then((res) => {
+          expect(res.body).to.be.an('object');
           expect(res.status).to.equal(201);
           expect(res.body.data).to.include({
             firstName: 'fawas',
             lastName: 'kareem',
-            message: 'login succesful'
+            // message: 'login succesful'
           });
         });
     });

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const userModel = require('../model/user');
 
 
-module.exports = async (req, res, next) => {
+const checkAdmin = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const decode = jwt.verify(token, process.env.secretKey);
@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
       return authDetails;
     }
     res.status(401).json({
-      message: 'you are Unathorized to perform this operation'
+      message: 'you are not an admin so you cant perform this operation'
     });
   } catch (err) {
     res.status(500).json({
@@ -23,3 +23,26 @@ module.exports = async (req, res, next) => {
     });
   }
 };
+
+const checkEmp = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decode = jwt.verify(token, process.env.secretKey);
+    const userMail = decode.email;
+    const { rows } = await userModel.getUser(userMail);
+    console.log(rows);
+    if (rows[0].email !== userMail) {
+      res.status(401).json({
+        message: 'you are not an employee in this company'
+      });
+    }
+    next();
+  } catch (err) {
+    res.status(500).json({
+      hell: 'hell',
+      message: err
+    });
+  }
+};
+
+module.exports = { checkAdmin, checkEmp };
