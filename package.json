@@ -7,7 +7,7 @@
     "build": "babel server.js --out-dir build",
     "devstart": "babel-watch server.js",
     "devstart2": "nodemon server.js",
-    "test": "node node_modules/mocha/bin/mocha"
+    "test": "mocha tests/**/*Test.js --reporter spec"
   },
   "repository": {
     "type": "git",
