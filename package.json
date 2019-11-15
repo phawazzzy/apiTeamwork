@@ -4,11 +4,10 @@
   "description": "This is a project from the DEVCWITHANDELA PROGRAM ....Teamwork is an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel server.js --out-dir build",
     "devstart": "babel-watch server.js",
     "devstart2": "nodemon server.js",
-    "mochaTest": "mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
