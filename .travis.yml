@@ -4,11 +4,9 @@ node_js:
   - node
 cache:
   directories:
-  - "$HOME/.npm"
-before_install:
-  - nvm install
+  - "node_modules"
 install:
-  - npm ci
+  - npm install
 services:
  - postgresql
 env:
@@ -18,4 +16,8 @@ script:
  - npm run test
 notification:
  - email: phawazzzy@gmail.com
+before_script:
+  - psql -c 'CREATE DATABASE "teamwork";' -U postgres
+  - psql -c `CREATE USER postgres WITH PASSWORD ${process.env.password};` -U postgres
+
 

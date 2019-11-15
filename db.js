@@ -23,6 +23,27 @@ const createUsersTables = () => {
     });
 };
 
-module.exports = { createUsersTables };
+const createGifsTables = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+    gifs(
+      gifId SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      imageUrl VARCHAR(255) NOT NULL,
+      flaggedInvalid INTEGER DEFAULT 0,
+      claps INTEGER DEFAULT 0,
+      dateCreated TIMESTAMP DEFAULT current_timestamp,
+      dataUpdated TIMESTAMP DEFAULT current_timestamp,
+      userId SERIAL REFERENCES users(id)
+      )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((err) => {
+      console.log(err);
+    });
+};
+
+module.exports = { createUsersTables, createGifsTables };
 
 require('make-runnable');

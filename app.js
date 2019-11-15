@@ -1,10 +1,10 @@
 // import express from 'express';
+const createError = require('http-errors');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const url = require('url');
 const hpp = require('hpp');
-// const bodyParser = require('body-parser');
 
 const userRoutes = require('./routes/user');
 const gifRoutes = require('./routes/gif');
@@ -13,8 +13,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.json());
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(hpp());
 app.use(helmet());
@@ -34,6 +33,10 @@ app.use((req, res, next) => {
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/gif', gifRoutes);
 
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
 
 app.use('/api', (req, res,) => {
   return res.status(200).send({ message: 'YAY! Congratulations! Your first endpoint is working' });
@@ -46,4 +49,15 @@ app.use('/api', (req, res, next) => {
   (apiVersion[1] !== 'v1') ? res.json({ message: `sorry, version ${apiVersion[1]} is not available` }) : next();
   res.end();
 });
+
+app.use((err, req, res) => {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  // res.render('frontend/error');
+});
+
 module.exports = app;
