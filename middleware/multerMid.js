@@ -9,15 +9,15 @@ const cloudStorage = require('./cloud-config');
 //   folder: 'csip',
 // });
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(new Error('hello bro'), '../images/uploads');
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, `${file.fieldname}-${Date.now()}`);
-//   }
-// });
-const storage = '../images/uploads/';
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(new Error('hello bro'), './images/uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}`);
+  }
+});
+// const storage = './images/uploads/';
 
 
 const checkFileType = (type) => {
@@ -41,7 +41,7 @@ const checkFileType = (type) => {
 };
 
 
-const upload = multer({ dest: storage }).single('image');
+const upload = multer({ cloudStorage }).single('image');
 
 
 module.exports = upload;

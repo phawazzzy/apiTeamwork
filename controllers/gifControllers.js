@@ -1,12 +1,7 @@
 /* eslint-disable consistent-return */
 const { check, validationResult } = require('express-validator');
 require('dotenv').config();
-
-const cloudinary = require('../middleware/cloud-config');
-
-
 const gifModel = require('../model/gif');
-// const { checkAdmin, checkEmp } = require('../middleware/authChecker');
 const getLogUser = require('../middleware/getLogUser');
 
 
@@ -31,14 +26,6 @@ exports.addGif = async (req, res) => {
   }
   const userid = await getLogUser(req);
   console.log(userid);
-  // const uploader = await upload.single('gif');
-  //   const cloudStorage = await cloudStorage.
-  // console.log(req.body.title);
-  // console.log(file)
-
-
-  // console.log('file upload in progress');
-  // console.log(cloud_name);
   const newGif = {
     title: req.body.title,
     imageurl: file.path,
@@ -46,35 +33,26 @@ exports.addGif = async (req, res) => {
     userid
   };
   console.log(newGif);
-  // console.log('i could see this lline');
   try {
     console.log('tring to pull of oooo');
 
-    // const result =
-    await gifModel.gifPost(newGif).then((result) => {
-     return res.status(201).json({
+    const result = await gifModel.gifPost(newGif)
+    console.log('tring to pull of');
+    if (result) {
+      console.log(result.rows[0]);
+      return res.status(201).json({
         status: 'success',
         data: {
-          gifId: result.gifId
+          gifId: result.rows[0].gifId,
+          message: 'gif successfully uploaded',
+          createdOn: result.rows[0].dateCreated,
+          title: result.rows[0].title,
+          imageurl: result.rows[0].imageurl,
+          public_url: result.rows[0].public_id,
+          userid: result.rows[0].userid
         }
-      })
-    })
-    console.log('tring to pull of');
-    // if (result) {
-    //   console.log(result);
-    //   return res.status(201).json({
-    //     status: 'success',
-    //     data: {
-    //       gifId: result.gifId,
-    //       message: 'gif successfully uploaded',
-    //       createdOn: result.dateCreated,
-    //       title: result.title,
-    //       imageurl: result.imageurl,
-    //       public_url: result.public_id,
-    //       userid: result.userid
-    //     }
-    //   });
-    // }
+      });
+    }
   } catch (error) {
     return res.status(401).json({
       status: 'error',
