@@ -29,6 +29,7 @@ const createGifsTables = () => {
       gifId SERIAL PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
       imageUrl VARCHAR(255) NOT NULL,
+      public_id VARCHAR(255) NOT NULL,
       flaggedInvalid INTEGER DEFAULT 0,
       claps INTEGER DEFAULT 0,
       dateCreated TIMESTAMP DEFAULT current_timestamp,

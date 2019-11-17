@@ -36,6 +36,8 @@ const checkEmp = async (req, res, next) => {
         message: 'you are not an employee in this company'
       });
     }
+    // const authDetails = { token: userMail };
+    // return authDetails;
     next();
   } catch (err) {
     res.status(500).json({
