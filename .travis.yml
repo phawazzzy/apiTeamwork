@@ -20,4 +20,5 @@ before_script:
   - psql -c 'CREATE DATABASE "teamwork";' -U postgres
   - psql -c "CREATE USER me WITH PASSWORD 'Hardemola29';" -U postgres
 
-
+after_script:
+  - npm run coverage
