@@ -105,9 +105,9 @@ exports.signin = async (req, res) => {
           if (result) {
             const token = jwt.sign({
               email: user.rows[0].email,
-              password: user.rows[0].id,
+              userId: user.rows[0].id,
               lastName: user.rows[0].lastname
-            }, process.env.secretKey, { expiresIn: '1h' });
+            }, process.env.secretKey, { expiresIn: '24h' });
             return res.status(201).json({
               message: 'login succesful',
               token,

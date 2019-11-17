@@ -5,6 +5,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const url = require('url');
 const hpp = require('hpp');
+const bodyParser = require('body-parser');
+const fileupload = require('express-fileupload');
 
 const userRoutes = require('./routes/user');
 const gifRoutes = require('./routes/gif');
@@ -12,8 +14,8 @@ const gifRoutes = require('./routes/gif');
 require('dotenv').config();
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cors());
 app.use(hpp());
 app.use(helmet());
@@ -37,7 +39,12 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
+app.use(fileupload());
 
+// {
+//   useTempFiles: true,
+//   debug: true
+// })
 app.use('/api', (req, res,) => {
   return res.status(200).send({ message: 'YAY! Congratulations! Your first endpoint is working' });
 });
