@@ -55,7 +55,7 @@ exports.addGif = async (req, res) => {
           createdOn: result.rows[0].dateCreated,
           title: result.rows[0].title,
           imageurl: result.rows[0].imageurl,
-          public_url: result.rows[0].public_id,
+          public_id: result.rows[0].public_id,
           userid: result.rows[0].userid
         }
       });

@@ -64,19 +64,30 @@ const createGifsTables = () => {
     });
 };
 
-const createArticleTables = () => {
+const createArticlesTables = () => {
   const queryText = `CREATE TABLE IF NOT EXISTS
     articles(
       articleId SERIAL PRIMARY KEY,
       title VARCHAR(255) NOT NULL,
-      
-      
-      
+      content VARCHAR(100000) NOT NULL,
+      dateCreated TIMESTAMP DEFAULT current_timestamp,
+      dataUpdated TIMESTAMP DEFAULT current_timestamp,
+      userId SERIAL REFERENCES users(id)
     )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((err) => {
+      console.log(err);
+    });
 };
 
 module.exports = {
-  createUsersTables, createGifsTables, createArticleTables, createAdminTables
+  createUsersTables,
+  createGifsTables,
+  createArticlesTables,
+  createAdminTables
 };
 
 require('make-runnable');
