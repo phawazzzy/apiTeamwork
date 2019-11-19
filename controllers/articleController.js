@@ -3,6 +3,7 @@ const moment = require('moment');
 const articleModel = require('../model/articles');
 const getLogUser = require('../middleware/getLogUser');
 
+// eslint-disable-next-line consistent-return
 exports.createArticles = async (req, res) => {
   const dataToValidate = [
     check(req.body.title).isLength({ min: 3 }),
