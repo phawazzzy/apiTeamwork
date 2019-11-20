@@ -11,5 +11,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', articleController.createArticles);
+router.patch('/:articleId', articleController.updateArticles);
 
 module.exports = router;

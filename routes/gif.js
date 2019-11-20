@@ -11,7 +11,7 @@ const gifController = require('../controllers/gifControllers');
 //   });
 // });
 
-router.post('/gifs', gifController.addGif);
+router.post('/', gifController.addGif);
 
 // router.post('/gifs', (req, res) => {
 //   console.log(req.files)

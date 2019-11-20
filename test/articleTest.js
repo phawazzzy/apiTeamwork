@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -6,6 +7,7 @@ const app = require('../app');
 chai.use(chaiHttp);
 const { expect } = chai;
 
+// eslint-disable-next-line no-undef
 describe('test for posting article', () => {
   it('should check if the user posting is auth before posting the article', (done) => {
     const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBoYXdhenp6eUBnbWFpbC5jb20iLCJ1c2VySWQiOjQsImxhc3ROYW1lIjoia2FyZWVtIiwiaWF0IjoxNTc0MTcwMTMyLCJleHAiOjE1NzQyNTY1MzJ9.2Z_kNa_QWgHHJppK4v8Pf9GsloSUGUm1RYnsYDgoth0';
