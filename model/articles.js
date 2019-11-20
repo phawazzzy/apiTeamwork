@@ -25,11 +25,15 @@ class ArticlesModel {
   }
 
   static async UpdateArticles(article) {
-    const update = 'UPDATE articles SET title = $1, content = $2, dataupdated = current_timestamp WHERE articleid = $3 RETURNING *';
-    const updateQuery = [article.title, article.content, article.articleid];
-    const returnabled = pool.query(update, updateQuery);
-    console.log(returnabled);
-    return returnabled;
+    try {
+      const update = 'UPDATE articles SET title = $1, content = $2, dataupdated = current_timestamp WHERE articleid = $3 RETURNING *';
+      const updateQuery = [article.title, article.content, article.articleid];
+      const returnabled = await pool.query(update, updateQuery);
+      console.log(returnabled.rows);
+      return returnabled.rows;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

@@ -72,34 +72,30 @@ exports.updateArticles = async (req, res) => {
     userid
   };
 
-  articleModel.getArticles(article).then((result) => {
-    if (result.rows.length < 1) {
+  await articleModel.getArticles(article).then((result) => {
+    if (result.rowCount < 1) {
       res.status(404).json({
         status: 'error',
         message: 'Article not found'
       });
     }
     if (result.rows[0].userid === article.userid) {
-      const okay = articleModel.UpdateArticles(article);
-      //   console.log(okay);
-      if (okay) {
+      articleModel.UpdateArticles(article).then((result2) => {
+        // console.log(result2);
         return res.status(201).json({
           status: 'Article has been updated succesfully',
           data: {
-            title: okay.title,
-            Article: okay.content
-          }
+            title: result2[0].title,
+            Article: result2[0].content,
+            dateUpdated: result2[0].dataupdated,
+            userid: result2[0].userid
+          },
         });
-      }
+      });
     } else if (result.rows[0].userid !== article.userid) {
       res.status(401).json({
         status: 'error',
         message: 'you are unathorized to edit this'
-      });
-    } else {
-      res.status(401).json({
-        status: 'error',
-        message: 'Article not found'
       });
     }
   }).catch((err) => {
