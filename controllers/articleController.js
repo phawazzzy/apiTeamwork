@@ -73,8 +73,12 @@ exports.updateArticles = async (req, res) => {
   };
 
   articleModel.getArticles(article).then((result) => {
-    // console.log(result.rows[0]);
-
+    if (result.rows.length < 1) {
+      res.status(404).json({
+        status: 'error',
+        message: 'Article not found'
+      });
+    }
     if (result.rows[0].userid === article.userid) {
       const okay = articleModel.UpdateArticles(article);
       //   console.log(okay);
@@ -87,10 +91,15 @@ exports.updateArticles = async (req, res) => {
           }
         });
       }
-    } else {
+    } else if (result.rows[0].userid !== article.userid) {
       res.status(401).json({
         status: 'error',
         message: 'you are unathorized to edit this'
+      });
+    } else {
+      res.status(401).json({
+        status: 'error',
+        message: 'Article not found'
       });
     }
   }).catch((err) => {
