@@ -1,5 +1,24 @@
 const pool = require('./config/config');
 
+
+const createAdminTables = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+    admins(
+      id SERIAL PRIMARY KEY,
+      firstName VARCHAR(128),
+      lastName  VARCHAR(128),
+      email VARCHAR(128),
+      password VARCHAR(128)
+    )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((err) => {
+      console.log(err);
+    });
+};
+
 const createUsersTables = () => {
   const queryText = `CREATE TABLE IF NOT EXISTS
     users(
@@ -45,6 +64,30 @@ const createGifsTables = () => {
     });
 };
 
-module.exports = { createUsersTables, createGifsTables };
+const createArticlesTables = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+    articles(
+      articleId SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      content VARCHAR(100000) NOT NULL,
+      dateCreated TIMESTAMP DEFAULT current_timestamp,
+      dataUpdated TIMESTAMP DEFAULT current_timestamp,
+      userId SERIAL REFERENCES users(id)
+    )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((err) => {
+      console.log(err);
+    });
+};
+
+module.exports = {
+  createUsersTables,
+  createGifsTables,
+  createArticlesTables,
+  createAdminTables
+};
 
 require('make-runnable');
