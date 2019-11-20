@@ -12,7 +12,7 @@ exports.addGif = async (req, res) => {
 
   const dataToValidate = [
     check(req.body.title).isLength({ min: 3 }),
-    check(file.name).isLength({ min: 3 }).isMimeType('image/gif'),
+    check(file.mimetype).isMimeType('image/gif'),
 
   ];
   const errors = validationResult(dataToValidate);

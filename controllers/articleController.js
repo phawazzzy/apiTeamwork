@@ -83,7 +83,7 @@ exports.updateArticles = async (req, res) => {
       articleModel.UpdateArticles(article).then((result2) => {
         // console.log(result2);
         return res.status(201).json({
-          status: 'Article has been updated succesfully',
+          status: 'Article successfully updated',
           data: {
             title: result2[0].title,
             Article: result2[0].content,
