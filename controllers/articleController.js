@@ -111,23 +111,33 @@ exports.deleteArticles = async (req, res) => {
   console.log(userid);
 
   const article = {
-    articleid: +req.params.articleId
+    articleid: +req.params.articleId,
+    userid
   };
   console.log(article.articleid);
 
-  await articleModel.DeleteArticle(article).then((result) => {
+  await articleModel.getArticles(article).then((result) => {
     if (result.rowCount < 1) {
       res.status(404).json({
-        message: 'No article found'
+        status: 'error',
+        message: 'Article not found'
       });
     }
-    console.log(result.rowCount);
-    return res.status(200).json({
-      status: 'success',
-      data: {
-        message: 'Article successfully deleted',
-      }
-    });
+    if (result.rows[0].userid === article.userid) {
+      articleModel.DeleteArticle(article).then((result2) => {
+        console.log(result2.rowCount);
+        return res.status(200).json({
+          status: 'success',
+          data: {
+            message: 'Article successfully deleted',
+          }
+        });
+      });
+    } else if (result.rows[0].userid !== article.userid) {
+      return res.status(401).json({
+        message: 'You are Unauthorize to perform this operation'
+      });
+    }
   })
     .catch((err) => {
       res.status(500).json({
