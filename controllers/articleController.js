@@ -105,3 +105,34 @@ exports.updateArticles = async (req, res) => {
     });
   });
 };
+
+exports.deleteArticles = async (req, res) => {
+  const userid = await getLogUser(req);
+  console.log(userid);
+
+  const article = {
+    articleid: +req.params.articleId
+  };
+  console.log(article.articleid);
+
+  await articleModel.DeleteArticle(article).then((result) => {
+    if (result.rowCount < 1) {
+      res.status(404).json({
+        message: 'No article found'
+      });
+    }
+    console.log(result.rowCount);
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        message: 'Article successfully deleted',
+      }
+    });
+  })
+    .catch((err) => {
+      res.status(500).json({
+        status: 'error',
+        message: `Error ${err} occured`
+      });
+    });
+};

@@ -35,6 +35,19 @@ class ArticlesModel {
       throw error;
     }
   }
+
+  static async DeleteArticle(article) {
+    try {
+      console.log(article);
+      const deleteQuery = 'DELETE FROM articles WHERE articleid = $1 RETURNING *';
+      const del = [article.articleid];
+      const returnabled = await pool.query(deleteQuery, del);
+      console.log(returnabled.rows);
+      return returnabled.rows;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = ArticlesModel;
