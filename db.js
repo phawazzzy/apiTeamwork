@@ -89,19 +89,27 @@ const createArticlesTables = () => {
 //       actionId SERIAL PRIMARY KEY,
 //       articleid SERIAL REFERENCES articles(articleid),
 //       comment VARCHAR(255) NOT NULL,
+//       flaggedInvalid INTEGER DEFAULT 0,
+//       claps INTEGER DEFAULT 0,
 //       dateCreated TIMESTAMP DEFAULT current_timestamp,
 //       dateUpdated TIMESTAMP DEFAULT current_timestamp
 
-//     )
-
-//   `
-// }
+//     )`;
+//   pool.query(queryText)
+//     .then((res) => {
+//       console.log(res);
+//       pool.end();
+//     }).catch((err) => {
+//       console.log(err);
+//     });
+// };
 
 module.exports = {
   createUsersTables,
   createGifsTables,
   createArticlesTables,
-  createAdminTables
+  createAdminTables,
+  // actionsOnArticles
 };
 
 require('make-runnable');

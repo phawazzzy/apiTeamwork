@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 const gifController = require('../controllers/gifControllers');
+const { checkEmp } = require('../middleware/authChecker');
+
 // const upload = require('../middleware/multerMid');
 // router.post('/', (req, res) => {
 //   let material = req.body.material;
