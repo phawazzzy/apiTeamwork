@@ -83,6 +83,20 @@ const createArticlesTables = () => {
     });
 };
 
+// const actionsOnArticles = () => {
+//   const queryText = `CREATE TABLE IF NOT EXISTS
+//     articleActions(
+//       actionId SERIAL PRIMARY KEY,
+//       articleid SERIAL REFERENCES articles(articleid),
+//       comment VARCHAR(255) NOT NULL,
+//       dateCreated TIMESTAMP DEFAULT current_timestamp,
+//       dateUpdated TIMESTAMP DEFAULT current_timestamp
+
+//     )
+
+//   `
+// }
+
 module.exports = {
   createUsersTables,
   createGifsTables,
