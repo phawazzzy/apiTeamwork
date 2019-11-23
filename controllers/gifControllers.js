@@ -68,3 +68,43 @@ exports.addGif = async (req, res) => {
     });
   }
 };
+
+exports.deleteGif = async (req, res) => {
+  const userid = await getLogUser(req);
+  console.log(userid);
+
+  const gif = {
+    gifid: +req.params.gifid,
+    userid
+  };
+
+  await gifModel.getGifs(gif).then((result) => {
+    if (result.rowCount < 1) {
+      res.status(404).json({
+        status: 'error',
+        message: 'gif not found',
+      });
+    }
+    if (result.rows[0].userid === gif.userid) {
+      gifModel.DeleteGif(gif).then((result2) => {
+        console.log(result2.rowCount);
+        res.status(200).json({
+          status: 'success',
+          data: {
+            message: 'gif successfully deleted'
+          }
+        });
+      });
+    } else if (result.rows[0].userid !== gif.userid) {
+      return res.status(401).json({
+        message: 'You are Unauthorize to perform this operation'
+      });
+    }
+  })
+    .catch((err) => {
+      res.status(500).json({
+        status: 'error',
+        message: `Error ${err} occured`
+      });
+    });
+};

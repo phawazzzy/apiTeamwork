@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 const gifController = require('../controllers/gifControllers');
+const { checkEmp } = require('../middleware/authChecker');
+
 // const upload = require('../middleware/multerMid');
 // router.post('/', (req, res) => {
 //   let material = req.body.material;
@@ -11,7 +13,8 @@ const gifController = require('../controllers/gifControllers');
 //   });
 // });
 
-router.post('/', gifController.addGif);
+router.post('/', checkEmp, gifController.addGif);
+router.delete('/:gifid', checkEmp, gifController.deleteGif);
 
 // router.post('/gifs', (req, res) => {
 //   console.log(req.files)

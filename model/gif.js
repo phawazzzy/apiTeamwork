@@ -14,6 +14,27 @@ class GifModel {
       throw err;
     }
   }
+
+  static async getGifs(gif) {
+    const search = 'SELECT * FROM gifs WHERE gifid = $1';
+    const searchQuery = [gif.gifid];
+    const returnabled = pool.query(search, searchQuery);
+    // console.log(returnabled);
+    return returnabled;
+  }
+
+  static async DeleteGif(gif) {
+    try {
+      console.log(gif);
+      const deleteQuery = 'DELETE FROM gifs WHERE gifid = $1 RETURNING *';
+      const del = [gif.gifid];
+      const returnabled = await pool.query(deleteQuery, del);
+      console.log(returnabled.rows);
+      return returnabled.rows;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 
