@@ -146,3 +146,46 @@ exports.deleteArticles = async (req, res) => {
       });
     });
 };
+
+exports.commentArticle = async (req, res) => {
+  const dataToValidate = [
+    check(req.body.comment).isLength({ min: 3 }),
+    // check(req.body.content).isLength({ min: 25 })
+  ];
+  const error = validationResult(dataToValidate);
+  if (!error.isEmpty()) {
+    res.status(400).json({
+      status: 'error',
+      message: 'you title or content is not up to the required min length'
+    });
+  }
+  const userid = await getLogUser(req);
+  const comment = {
+    articleid: +req.params.articleId,
+    comment: req.body.comment,
+    userid
+  };
+  console.log(comment.articleid);
+
+  await articleModel.CommentArticle(comment).then((result) => {
+    if (result) {
+      console.log(result);
+      return res.status(201).json({
+        status: 'Success',
+        data: {
+          articleid: result.rows[0].articleid,
+          createdOn: result.rows[0].datacreated,
+
+
+        }
+
+      });
+    }
+  })
+    .catch((err) => {
+      res.status(500).json({
+        status: 'error',
+        message: `error ${err} occured`
+      });
+    });
+};

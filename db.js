@@ -83,33 +83,33 @@ const createArticlesTables = () => {
     });
 };
 
-// const actionsOnArticles = () => {
-//   const queryText = `CREATE TABLE IF NOT EXISTS
-//     articleActions(
-//       actionId SERIAL PRIMARY KEY,
-//       articleid SERIAL REFERENCES articles(articleid),
-//       comment VARCHAR(255) NOT NULL,
-//       flaggedInvalid INTEGER DEFAULT 0,
-//       claps INTEGER DEFAULT 0,
-//       dateCreated TIMESTAMP DEFAULT current_timestamp,
-//       dateUpdated TIMESTAMP DEFAULT current_timestamp
+const articleComment = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+    articleComment(
+      actionId SERIAL PRIMARY KEY,
+      comment VARCHAR(255) NOT NULL,
+      dateCreated TIMESTAMP DEFAULT current_timestamp,
+      dateUpdated TIMESTAMP DEFAULT current_timestamp,
+      articleid SERIAL REFERENCES articles(articleid),
+      userId SERIAL REFERENCES users(id)
 
-//     )`;
-//   pool.query(queryText)
-//     .then((res) => {
-//       console.log(res);
-//       pool.end();
-//     }).catch((err) => {
-//       console.log(err);
-//     });
-// };
+
+    )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((err) => {
+      console.log(err);
+    });
+};
 
 module.exports = {
   createUsersTables,
   createGifsTables,
   createArticlesTables,
   createAdminTables,
-  // actionsOnArticles
+  articleComment
 };
 
 require('make-runnable');

@@ -48,6 +48,19 @@ class ArticlesModel {
       throw err;
     }
   }
+
+  static async CommentArticle(comment) {
+    try {
+      const commentQuery = 'INSERT INTO articlecomment (comment, userid, articleid) VALUES($1, $2, $3) RETURNING *';
+      const values = [comment.comment, comment.userid, comment.articleid];
+      const returnabled = await pool.query(commentQuery, values);
+      console.log(returnabled);
+      console.log(returnabled);
+      return returnabled;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = ArticlesModel;
