@@ -3,6 +3,8 @@ const { check, validationResult } = require('express-validator');
 // const moment = require('moment');
 const articleModel = require('../model/articles');
 const getLogUser = require('../middleware/getLogUser');
+// const pool = require('../config/config');
+
 
 // eslint-disable-next-line consistent-return
 exports.createArticles = async (req, res) => {
@@ -169,16 +171,20 @@ exports.commentArticle = async (req, res) => {
 
   await articleModel.CommentArticle(comment).then((result) => {
     if (result) {
-      console.log(result);
-      return res.status(201).json({
-        status: 'Success',
-        data: {
-          articleid: result.rows[0].articleid,
-          createdOn: result.rows[0].datacreated,
-
-
-        }
-
+      console.log(result.rows[0]);
+      articleModel.getArticles(comment).then((comRes) => {
+        console.log(comRes);
+        return res.status(201).json({
+          status: 'success',
+          data: {
+            message: 'Comment successfully created',
+            articleId: comRes[0].articleid,
+            createdOn: comRes[1].datecreated,
+            articleTitle: comRes[0].content,
+            comment: comRes[1].comment,
+            commentPoster: comRes[1].poster
+          }
+        });
       });
     }
   })
