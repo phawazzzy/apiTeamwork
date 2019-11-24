@@ -3,6 +3,8 @@ const { check, validationResult } = require('express-validator');
 // const moment = require('moment');
 const articleModel = require('../model/articles');
 const getLogUser = require('../middleware/getLogUser');
+// const pool = require('../config/config');
+
 
 // eslint-disable-next-line consistent-return
 exports.createArticles = async (req, res) => {
@@ -143,6 +145,53 @@ exports.deleteArticles = async (req, res) => {
       res.status(500).json({
         status: 'error',
         message: `Error ${err} occured`
+      });
+    });
+};
+
+exports.commentArticle = async (req, res) => {
+  const dataToValidate = [
+    check(req.body.comment).isLength({ min: 3 }),
+    // check(req.body.content).isLength({ min: 25 })
+  ];
+  const error = validationResult(dataToValidate);
+  if (!error.isEmpty()) {
+    res.status(400).json({
+      status: 'error',
+      message: 'you title or content is not up to the required min length'
+    });
+  }
+  const userid = await getLogUser(req);
+  const comment = {
+    articleid: +req.params.articleId,
+    comment: req.body.comment,
+    userid
+  };
+  console.log(comment.articleid);
+
+  await articleModel.CommentArticle(comment).then((result) => {
+    if (result) {
+      console.log(result.rows[0]);
+      articleModel.getArticles(comment).then((comRes) => {
+        console.log(comRes);
+        return res.status(201).json({
+          status: 'success',
+          data: {
+            message: 'Comment successfully created',
+            articleId: comRes[0].articleid,
+            createdOn: comRes[1].datecreated,
+            articleTitle: comRes[0].content,
+            comment: comRes[1].comment,
+            commentPoster: comRes[1].poster
+          }
+        });
+      });
+    }
+  })
+    .catch((err) => {
+      res.status(500).json({
+        status: 'error',
+        message: `error ${err} occured`
       });
     });
 };
