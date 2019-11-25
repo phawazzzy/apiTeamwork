@@ -121,24 +121,26 @@ exports.commentGif = async (req, res) => {
     });
   }
   const userid = await getLogUser(req);
-  const gifcomment = {
+  const comment = {
     gifid: +req.params.gifid,
     comment: req.body.comment,
     userid
   };
 
-  await gifModel.CommentGif(gifcomment).then((result) => {
+  await gifModel.CommentGif(comment).then((result) => {
     if (result) {
       console.log(result.rows[0]);
-      res.status(200).json({
-
-        status: 'success',
-        data: {
-          message: 'Comment successfully created',
-          createdOn: result.rows[0].datecreated,
-          comment: result.rows[0].comment,
-
-        }
+      gifModel.getGifs(comment).then((comRes) => {
+        console.log(comRes);
+        res.status(200).json({
+          status: 'success',
+          data: {
+            message: 'Comment successfully created',
+            createdOn: comRes[1].datecreated,
+            gifTitle: comRes[0].title,
+            comment: comRes[1].comment,
+          }
+        });
       });
     }
   })
