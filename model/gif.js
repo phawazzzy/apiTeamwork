@@ -35,6 +35,19 @@ class GifModel {
       throw err;
     }
   }
+
+  static async CommentGif(gifcomment) {
+    try {
+      const commentQuery = 'INSERT INTO gifcomment (comment, userid, gifid) VALUES($1, $2, $3) RETURNING *';
+      const values = [gifcomment.comment, gifcomment.userid, gifcomment.gifid];
+      const returnabled = await pool.query(commentQuery, values);
+      // console.log(returnabled.rows[0]);
+      // console.log(returnabled);
+      return returnabled;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 

@@ -15,6 +15,8 @@ const { checkEmp } = require('../middleware/authChecker');
 
 router.post('/', checkEmp, gifController.addGif);
 router.delete('/:gifid', checkEmp, gifController.deleteGif);
+router.post('/:gifid/comment', checkEmp, gifController.commentGif);
+
 
 // router.post('/gifs', (req, res) => {
 //   console.log(req.files)
