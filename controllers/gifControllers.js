@@ -139,6 +139,8 @@ exports.commentGif = async (req, res) => {
             createdOn: comRes[1].datecreated,
             gifTitle: comRes[0].title,
             comment: comRes[1].comment,
+            commentPoster: comRes[1].poster
+
           }
         });
       });
