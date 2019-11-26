@@ -180,7 +180,8 @@ exports.commentArticle = async (req, res) => {
             message: 'Comment successfully created',
             articleId: comRes[0].articleid,
             createdOn: comRes[1].datecreated,
-            articleTitle: comRes[0].content,
+            articleTitle: comRes[0].title,
+            article: comRes[0].content,
             comment: comRes[1].comment,
             commentPoster: comRes[1].poster
           }

@@ -104,12 +104,35 @@ const articleComment = () => {
     });
 };
 
+const gifComment = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS
+    gifComment(
+      actionId SERIAL PRIMARY KEY,
+      comment VARCHAR(255) NOT NULL,
+      dateCreated TIMESTAMP DEFAULT current_timestamp,
+      dateUpdated TIMESTAMP DEFAULT current_timestamp,
+      gifid SERIAL REFERENCES gifs(gifId),
+      userId SERIAL REFERENCES users(id)
+
+
+    )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((err) => {
+      console.log(err);
+    });
+};
+
+
 module.exports = {
   createUsersTables,
   createGifsTables,
   createArticlesTables,
   createAdminTables,
-  articleComment
+  articleComment,
+  gifComment
 };
 
 require('make-runnable');

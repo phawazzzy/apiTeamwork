@@ -108,3 +108,48 @@ exports.deleteGif = async (req, res) => {
       });
     });
 };
+
+exports.commentGif = async (req, res) => {
+  const dataToValidate = [
+    check(req.body.comment).isLength({ min: 3 }),
+  ];
+  const error = validationResult(dataToValidate);
+  if (!error.isEmpty()) {
+    res.status(400).json({
+      status: 'error',
+      message: 'you comment isnt up 3 words'
+    });
+  }
+  const userid = await getLogUser(req);
+  const comment = {
+    gifid: +req.params.gifid,
+    comment: req.body.comment,
+    userid
+  };
+
+  await gifModel.CommentGif(comment).then((result) => {
+    if (result) {
+      console.log(result.rows[0]);
+      gifModel.getGifs(comment).then((comRes) => {
+        console.log(comRes);
+        res.status(200).json({
+          status: 'success',
+          data: {
+            message: 'Comment successfully created',
+            createdOn: comRes[1].datecreated,
+            gifTitle: comRes[0].title,
+            comment: comRes[1].comment,
+            commentPoster: comRes[1].poster
+
+          }
+        });
+      });
+    }
+  })
+    .catch((err) => {
+      res.status(500).json({
+        status: 'error',
+        message: `Error ${err} occured`
+      });
+    });
+};

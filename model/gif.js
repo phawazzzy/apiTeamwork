@@ -16,11 +16,22 @@ class GifModel {
   }
 
   static async getGifs(gif) {
-    const search = 'SELECT * FROM gifs WHERE gifid = $1';
-    const searchQuery = [gif.gifid];
-    const returnabled = pool.query(search, searchQuery);
-    // console.log(returnabled);
-    return returnabled;
+    try {
+      const search = 'SELECT * FROM gifs WHERE gifid = $1';
+      const getGifComment = 'select c.comment, c.datecreated, concat(firstname, \' \' , lastname) as poster FROM gifcomment c inner JOIN users u ON c.userid = u.id where gifid = $1 ORDER BY c.datecreated DESC';
+      const searchQuery = [gif.gifid];
+      const returnabled = await pool.query(search, searchQuery);
+      if (returnabled.rows[0] === []) {
+        return ['Gif doesnt exist', 'gif doesnt exist'];
+      }
+      const res = await pool.query(getGifComment, searchQuery);
+      const thegif = returnabled.rows[0];
+      const thecomment = res.rows[0];
+      console.log(returnabled);
+      return [thegif, thecomment];
+    } catch (error) {
+      throw error;
+    }
   }
 
   static async DeleteGif(gif) {
@@ -33,6 +44,19 @@ class GifModel {
       return returnabled.rows;
     } catch (err) {
       throw err;
+    }
+  }
+
+  static async CommentGif(gifcomment) {
+    try {
+      const commentQuery = 'INSERT INTO gifcomment (comment, userid, gifid) VALUES($1, $2, $3) RETURNING *';
+      const values = [gifcomment.comment, gifcomment.userid, gifcomment.gifid];
+      const returnabled = await pool.query(commentQuery, values);
+      // console.log(returnabled.rows[0]);
+      // console.log(returnabled);
+      return returnabled;
+    } catch (error) {
+      throw error;
     }
   }
 }
