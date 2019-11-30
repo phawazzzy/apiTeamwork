@@ -27,7 +27,7 @@ class GifModel {
       const res = await pool.query(getGifComment, searchQuery);
       const thegif = returnabled.rows[0];
       const thecomment = res.rows[0];
-      console.log(returnabled);
+      // console.log(returnabled);
       return [thegif, thecomment];
     } catch (error) {
       throw error;
