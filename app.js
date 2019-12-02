@@ -11,6 +11,7 @@ const fileUpload = require('express-fileupload');
 const userRoutes = require('./routes/user');
 const gifRoutes = require('./routes/gif');
 const articlesRoutes = require('./routes/articles');
+const feedRoutes = require('./routes/feed');
 
 
 require('dotenv').config();
@@ -41,6 +42,7 @@ app.use(fileUpload({
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/gifs', gifRoutes);
 app.use('/api/v1/articles', articlesRoutes);
+app.use('/api/v1/feed', feedRoutes);
 
 app.use((req, res, next) => {
   next(createError(404));
