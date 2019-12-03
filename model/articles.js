@@ -29,7 +29,7 @@ class ArticlesModel {
       const res = await pool.query(getArticleComment, searchQuery);
       const thearticle = returnabled.rows[0];
       const thecomment = res.rows[0];
-      // console.log([thearticle, thecoment]);
+      // console.log([thearticle, thecomment]);
       return [thearticle, thecomment];
     } catch (error) {
       throw error;
@@ -69,6 +69,28 @@ class ArticlesModel {
       // console.log(returnabled.rows[0]);
       // console.log(returnabled);
       return returnabled;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async oneArticle(article) {
+    try {
+      const search = 'SELECT *, concat(firstname, \' \', lastname) as author from articles a inner join users u on a.userid = u.id WHERE articleid = $1';
+      const queryparams = [article.articleid];
+      const { rows } = await pool.query(search, queryparams);
+      return rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getComments(article) {
+    try {
+      const getcomment = 'select actionid, comment, c.userid, a.articleid, concat(firstname, \' \', lastname) as poster FROM articlecomment c inner JOIN articles a on c.articleid = a.articleid inner join users u on c.userid = u.id where a.articleid = $1';
+      const queryparams = [article.articleid];
+      const { rows, rowCount } = await pool.query(getcomment, queryparams);
+      return [rows, rowCount];
     } catch (error) {
       throw error;
     }

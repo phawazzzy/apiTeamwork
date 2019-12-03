@@ -196,3 +196,46 @@ exports.commentArticle = async (req, res) => {
       });
     });
 };
+
+exports.getOne = async (req, res,) => {
+  const article = {
+    articleid: req.params.articleId
+  };
+  try {
+    const result = await articleModel.oneArticle(article);
+    if (result.rowCount < 1) {
+      res.status(404).json({
+        status: 'Error',
+        message: 'Article doesnt exist'
+      });
+    } else {
+      await articleModel.getComments(article).then((result2) => {
+        // console.log(result);
+        // console.log(...result2);
+        res.status(200).json({
+          status: 'success',
+          data: {
+            id: result.articleid,
+            createdOn: result.datecreated,
+            title: result.title,
+            article: result.content,
+            poster: result.author,
+            comment: (result2[1] < 1) ? 'This article has no comment, be the first to comment' : result2[0].map((docs) => {
+              return {
+                commentId: docs.actionid,
+                comment: docs.comment,
+                authorId: docs.userid,
+                commentPoster: docs.poster
+              };
+            })
+          }
+        });
+      });
+    }
+  } catch (error) {
+    res.status(200).json({
+      status: 'error',
+      message: `Error ${error} occured`,
+    });
+  }
+};
