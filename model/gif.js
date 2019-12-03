@@ -64,9 +64,9 @@ class GifModel {
     try {
       const search = 'SELECT *, concat(firstname, \' \', lastname) as author from gifs g inner join users u on g.userid = u.id WHERE g.gifid = $1';
       const queryparams = [gif.gifid];
-      const { rows } = await pool.query(search, queryparams);
+      const { rows, rowCount } = await pool.query(search, queryparams);
       // console.log(result);
-      return rows[0];
+      return [rows[0], rowCount];
     } catch (error) {
       throw error;
     }

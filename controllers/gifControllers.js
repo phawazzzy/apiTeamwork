@@ -160,6 +160,7 @@ exports.getOne = async (req, res,) => {
   };
   try {
     const result = await gifModel.oneGif(gif);
+    console.log(result);
     if (result.rowCount < 1) {
       res.status(404).json({
         status: 'Error',
@@ -173,10 +174,10 @@ exports.getOne = async (req, res,) => {
           status: 'success',
           data: {
             id: result.gifid,
-            createdOn: result.datecreated,
-            title: result.title,
-            url: result.imageurl,
-            poster: result.author,
+            createdOn: result[0].datecreated,
+            title: result[0].title,
+            url: result[0].imageurl,
+            poster: result[0].author,
             comment: (result2[1] < 1) ? 'This gif has no comment, be the first to comment' : result2[0].map((docs) => {
               return {
                 commentId: docs.actionid,
