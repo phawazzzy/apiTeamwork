@@ -22,7 +22,7 @@ class ArticlesModel {
       const getArticleComment = 'select c.comment, c.datecreated, concat(firstname, \' \' , lastname) as poster FROM articlecomment c inner JOIN users u ON c.userid = u.id where articleid = $1 ORDER BY c.datecreated DESC';
       const searchQuery = [article.articleid];
       const returnabled = await pool.query(search, searchQuery);
-      // console.log(returnabled.rows[0]);
+      console.log(returnabled.rows[0]);
       if (returnabled.rows[0] === []) {
         return ['article doesnt exist', 'article doesnt exist'];
       }
@@ -78,8 +78,9 @@ class ArticlesModel {
     try {
       const search = 'SELECT *, concat(firstname, \' \', lastname) as author from articles a inner join users u on a.userid = u.id WHERE articleid = $1';
       const queryparams = [article.articleid];
-      const { rows } = await pool.query(search, queryparams);
-      return rows[0];
+      const { rows, rowCount } = await pool.query(search, queryparams);
+      console.log(rows[0]);
+      return [rows[0], rowCount];
     } catch (error) {
       throw error;
     }

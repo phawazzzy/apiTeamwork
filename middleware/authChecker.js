@@ -30,7 +30,7 @@ const checkEmp = async (req, res, next) => {
     const decode = jwt.verify(token, process.env.secretKey);
     const userMail = decode.email;
     const { rows } = await userModel.getUser(userMail);
-    console.log(rows);
+    // console.log(rows);
     if (rows[0].email !== userMail) {
       res.status(401).json({
         message: 'you are not an employee in this company'

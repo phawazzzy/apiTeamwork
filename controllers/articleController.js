@@ -118,14 +118,14 @@ exports.deleteArticles = async (req, res) => {
   };
   console.log(article.articleid);
 
-  await articleModel.getArticles(article).then((result) => {
-    if (result.rowCount < 1) {
+  await articleModel.oneArticle(article).then((result) => {
+    if (result[1] < 1) {
       res.status(404).json({
         status: 'error',
         message: 'Article not found'
       });
     }
-    if (result.rows[0].userid === article.userid) {
+    if (result[0].userid === article.userid) {
       articleModel.DeleteArticle(article).then((result2) => {
         console.log(result2.rowCount);
         return res.status(200).json({
@@ -135,7 +135,7 @@ exports.deleteArticles = async (req, res) => {
           }
         });
       });
-    } else if (result.rows[0].userid !== article.userid) {
+    } else if (result[0].userid !== article.userid) {
       return res.status(401).json({
         message: 'You are Unauthorize to perform this operation'
       });
@@ -203,7 +203,7 @@ exports.getOne = async (req, res,) => {
   };
   try {
     const result = await articleModel.oneArticle(article);
-    if (result.rowCount < 1) {
+    if (result[1] < 1) {
       res.status(404).json({
         status: 'Error',
         message: 'Article doesnt exist'
@@ -211,15 +211,15 @@ exports.getOne = async (req, res,) => {
     } else {
       await articleModel.getComments(article).then((result2) => {
         // console.log(result);
-        // console.log(...result2);
+        console.log(...result2);
         res.status(200).json({
           status: 'success',
           data: {
-            id: result.articleid,
-            createdOn: result.datecreated,
-            title: result.title,
-            article: result.content,
-            poster: result.author,
+            id: result[0].articleid,
+            createdOn: result[0].datecreated,
+            title: result[0].title,
+            article: result[0].content,
+            poster: result[0].author,
             comment: (result2[1] < 1) ? 'This article has no comment, be the first to comment' : result2[0].map((docs) => {
               return {
                 commentId: docs.actionid,

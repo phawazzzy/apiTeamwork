@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 
 const app = require('../app');
 
-const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInVzZXJJZCI6OCwibGFzdE5hbWUiOiJrYXJlZW0iLCJpYXQiOjE1NzQyNjc4NjIsImV4cCI6MTU3NDM1NDI2Mn0.8efiXz9xuJ3g4tkm3nPoSfgD9zqqJ7MAmEWDNvcE4Bo';
+const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBoYXdhenp6eUBnbWFpbC5jb20iLCJ1c2VySWQiOjQsImxhc3ROYW1lIjoia2FyZWVtIiwiaWF0IjoxNTc1MzE0NTkzLCJleHAiOjE1NzU0MDA5OTN9.uiLUGReiaB9PxTxV7cmBBtQwVe498tCFlGBajjOzGh4';
 
 
 chai.use(chaiHttp);
@@ -59,7 +59,7 @@ describe('test for updating', () => {
 describe('delete article', () => {
   it('should check if the user is the original poster of the article', (done) => {
     chai.request(app)
-      .delete('/api/v1/articles/4')
+      .delete('/api/v1/articles/11')
       .set('Content-Type', 'application/json')
       .set({ Authorization: token })
       .field('articleid', '1')
@@ -78,5 +78,30 @@ describe('delete article', () => {
         console.log(err);
       });
     done();
+  });
+});
+
+describe('post comment', () => {
+  it('should check if the user is the auth before posting', (done) => {
+    chai.request(app)
+      .post('/api/v1/articles/5/comment')
+      .set('Content-Type', 'application/json')
+      .set({ Authorization: token })
+      .field('comment', 'this is a nw coomment on this article')
+      .then((res) => {
+        expect(res.body).to.be.an('object');
+        expect(res.status).to.equal(201);
+        // console.log(res.body);
+        expect(res.body.status).to.include('success');
+        expect(res.body.data).to.include({
+          message: 'Comment successfully created',
+
+        });
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // done();
   });
 });
