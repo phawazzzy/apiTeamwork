@@ -59,6 +59,29 @@ class GifModel {
       throw error;
     }
   }
+
+  static async oneGif(gif) {
+    try {
+      const search = 'SELECT *, concat(firstname, \' \', lastname) as author from gifs g inner join users u on g.userid = u.id WHERE g.gifid = $1';
+      const queryparams = [gif.gifid];
+      const { rows } = await pool.query(search, queryparams);
+      // console.log(result);
+      return rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getComments(gif) {
+    try {
+      const getcomment = 'select actionid, comment, c.userid, g.gifid, concat(firstname, \' \', lastname) as poster FROM gifcomment c inner JOIN gifs g on c.gifid = g.gifid inner join users u on c.userid = u.id where g.gifid = $1';
+      const queryparams = [gif.gifid];
+      const { rows, rowCount } = await pool.query(getcomment, queryparams);
+      return [rows, rowCount];
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 
