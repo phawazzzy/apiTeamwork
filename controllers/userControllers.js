@@ -10,7 +10,6 @@ const userModel = require('../model/user');
 // eslint-disable-next-line consistent-return
 exports.signup = async (req, res) => {
   const dataToValidate = [
-    check(req.body.isAdmin).isBoolean(),
     check(req.body.firstName).isLength({
       min: 3
     }).isAlpha(),
@@ -35,12 +34,14 @@ exports.signup = async (req, res) => {
   const errors = validationResult(dataToValidate);
   if (!errors.isEmpty()) {
     res.status(400).json({
-      error: errors.msg
+      status: 'error',
+      message: `Error ${errors} occured`
     });
     return res.status(201).json({
       message: 'all data has passed validator'
     });
   }
+
   const hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8));
   const newUser = {
     isAdmin: false,
@@ -53,16 +54,22 @@ exports.signup = async (req, res) => {
     address: req.body.address,
     password: hash,
   };
-  console.log(newUser);
+  // console.log(newUser);
   const token = jwt.sign({ newUser }, process.env.secretKey, { expiresIn: '1h' });
   try {
+    const findByEmail = await userModel.findByEmail(newUser);
+    if (findByEmail.rowCount > 0) {
+      return res.status(203).json({
+        message: 'oops your email isnt available, please choose another '
+      });
+    }
     const save = await userModel.addUser(newUser);
     if (save) {
       res.status(201).json({
         status: 'success',
         token,
         message: 'User account successfully created',
-        data: save.rows
+        data: save.rows[0]
       });
     }
   } catch (error) {
@@ -91,13 +98,14 @@ exports.signin = async (req, res) => {
   try {
     await userModel.getUser(loginDetails.email)
       .then((user) => {
-        if (!user) {
+        if (user.rowCount < 1) {
           return res.status(401).json({
             message: 'user not found'
           });
         }
         bcrypt.compare(req.body.password, user.rows[0].password, (err, result) => {
-          if (err) {
+          console.log(user.rows[0].password);
+          if (!result) {
             return res.status(401).json({
               message: 'incorrect password'
             });
@@ -124,13 +132,15 @@ exports.signin = async (req, res) => {
         });
       })
       .catch((err) => {
-        console.log('i am here');
         res.status(500).json({
-          error: err
+          status: 'error',
+          message: `Error ${err} occured`
         });
       });
-  } catch (err) {
-    console.log('i am the errooorr');
-    throw err;
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: `Error ${error} occured`
+    });
   }
 };

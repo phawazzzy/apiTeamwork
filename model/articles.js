@@ -96,6 +96,17 @@ class ArticlesModel {
       throw error;
     }
   }
+
+  static async delcomment(article) {
+    try {
+      const commentToCom = 'delete from articlecomment where articleid = $1 returning ';
+      const query = [article.articleid];
+      const result = await pool.query(commentToCom, query);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = ArticlesModel;

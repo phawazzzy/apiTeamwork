@@ -78,35 +78,76 @@ exports.deleteGif = async (req, res) => {
     userid
   };
 
-  await gifModel.getGifs(gif).then((result) => {
-    if (result.rowCount < 1) {
+  try {
+    const result = await gifModel.oneGif(gif);
+    if (result[1] < 1) {
       res.status(404).json({
         status: 'error',
-        message: 'gif not found',
+        message: 'Gif not found'
       });
     }
-    if (result.rows[0].userid === gif.userid) {
-      gifModel.DeleteGif(gif).then((result2) => {
-        console.log(result2.rowCount);
-        res.status(200).json({
-          status: 'success',
-          data: {
-            message: 'gif successfully deleted'
-          }
+    if (result[0].userid === gif.userid) {
+      const delcomment = await gifModel.delcomment(gif);
+      if (delcomment) {
+        gifModel.DeleteGif(gif).then((result2) => {
+          console.log(result2.rowCount);
+          return res.status(200).json({
+            status: 'success',
+            data: {
+              message: 'Gif successfully deleted',
+            }
+          });
         });
-      });
-    } else if (result.rows[0].userid !== gif.userid) {
+      }
+    } else if (result[0].userid !== gif.userid) {
       return res.status(401).json({
-        message: 'You are Unauthorize to perform this operation'
+        message: 'You are Unauthorized to perform this operation'
       });
     }
-  })
-    .catch((err) => {
-      res.status(500).json({
-        status: 'error',
-        message: `Error ${err} occured`
-      });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: `Error ${error} occured`
     });
+  }
+
+  // await gifModel.getGifs(gif).then((result) => {
+  //   console.log(result);
+  //   if (result.rowCount < 1) {
+  //     console.log('i got here1');
+  //     res.status(404).json({
+  //       status: 'error',
+  //       message: 'gif not found',
+  //     });
+  //   }
+  //   console.log('i got here2');
+  //   if (result.rows[0].userid === gif.userid) {
+  //     console.log('right poster');
+  //     gifModel.delcomment(gif).then((deletecomment) => {
+  //       if (deletecomment) {
+  //         gifModel.DeleteGif(gif).then((result2) => {
+  //           console.log(result2.rowCount);
+  //           res.status(200).json({
+  //             status: 'success',
+  //             data: {
+  //               message: 'gif successfully deleted'
+  //             }
+  //           });
+  //         });
+  //       }
+  //     });
+  //   } else if (result.rows[0].userid !== gif.userid) {
+  //     return res.status(401).json({
+  //       message: 'You are Unauthorize to perform this operation'
+  //     });
+  //   }
+  // })
+  //   .catch((err) => {
+  //     res.status(500).json({
+  //       status: 'error',
+  //       message: `Error ${err} occured`
+  //     });
+  //   });
 };
 
 exports.commentGif = async (req, res) => {
@@ -161,7 +202,7 @@ exports.getOne = async (req, res,) => {
   try {
     const result = await gifModel.oneGif(gif);
     console.log(result);
-    if (result.rowCount < 1) {
+    if (result[1] < 1) {
       res.status(404).json({
         status: 'Error',
         message: 'gif doesnt exist'

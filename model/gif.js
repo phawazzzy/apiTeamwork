@@ -21,7 +21,10 @@ class GifModel {
       const getGifComment = 'select c.comment, c.datecreated, concat(firstname, \' \' , lastname) as poster FROM gifcomment c inner JOIN users u ON c.userid = u.id where gifid = $1 ORDER BY c.datecreated DESC';
       const searchQuery = [gif.gifid];
       const returnabled = await pool.query(search, searchQuery);
-      if (returnabled.rows[0] === []) {
+      // console.log(returnabled);
+
+      if (returnabled.rows < 1) {
+        console.log('i am here');
         return ['Gif doesnt exist', 'gif doesnt exist'];
       }
       const res = await pool.query(getGifComment, searchQuery);
@@ -78,6 +81,17 @@ class GifModel {
       const queryparams = [gif.gifid];
       const { rows, rowCount } = await pool.query(getcomment, queryparams);
       return [rows, rowCount];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async delcomment(gif) {
+    try {
+      const commentTodel = 'delete from gifcomment where gifid = $1 returning *';
+      const query = [gif.gifid];
+      const result = await pool.query(commentTodel, query);
+      return result;
     } catch (error) {
       throw error;
     }

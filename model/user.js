@@ -8,7 +8,7 @@ class UserModel {
 
       const values = [`${newUser.isAdmin}`, `${newUser.firstName}`, `${newUser.lastName}`, `${newUser.email}`, `${newUser.password}`, `${newUser.gender}`, `${newUser.jobRole}`, `${newUser.department}`, `${newUser.address}`];
       const result = await pool.query(newUserQuery, values);
-      console.log(result);
+      // console.log(result);
       return result;
     } catch (error) {
       throw error;
@@ -21,6 +21,19 @@ class UserModel {
 
     try {
       const result = await pool.query(getUserQuery, values);
+      console.log(result.rows);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async findByEmail(user) {
+    const getUserQuery = 'SELECT "email" FROM users WHERE email = $1';
+    const value = [user.email];
+    try {
+      const result = await pool.query(getUserQuery, value);
+      console.log(result.rows);
       return result;
     } catch (error) {
       throw error;

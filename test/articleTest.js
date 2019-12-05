@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 
 const app = require('../app');
 
-const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBoYXdhenp6eUBnbWFpbC5jb20iLCJ1c2VySWQiOjQsImxhc3ROYW1lIjoia2FyZWVtIiwiaWF0IjoxNTc1MzE0NTkzLCJleHAiOjE1NzU0MDA5OTN9.uiLUGReiaB9PxTxV7cmBBtQwVe498tCFlGBajjOzGh4';
+const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBoYXdhenp6eUBnbWFpbC5jb20iLCJ1c2VySWQiOjQsImxhc3ROYW1lIjoia2FyZWVtIiwiaWF0IjoxNTc1NTQwODE3LCJleHAiOjE1NzU2MjcyMTd9.IApIiBU1_rBlJUSANKlBVzg_fW8lWdngpdN_kI2WuFU';
 
 
 chai.use(chaiHttp);
@@ -14,7 +14,7 @@ const { expect } = chai;
 describe('test for posting article', () => {
   it('should check if the user posting is auth before posting the article', (done) => {
     chai.request(app)
-      .post('/api/v1/articles')
+      .post('/api/v1/articles/')
       .set('Content-Type', 'application/json')
       .set({ Authorization: token })
       .field('title', 'my new article')
@@ -35,19 +35,20 @@ describe('test for posting article', () => {
 describe('test for updating', () => {
   it('should check if the user is the original poster of the article', (done) => {
     chai.request(app)
-      .patch('/api/v1/articles/4')
+      .patch('/api/v1/articles/20')
       .set('Content-Type', 'application/json')
       .set({ Authorization: token })
-      .field('articleid', '1')
+      // .field('articleid', '1')
       .field('title', 'my article edit')
       .field('content', 'lorem lorem lorem lorem updated')
       .then((res) => {
         expect(res.body).to.be.an('object');
         expect(res.status).to.equal(201);
-        expect(res.body.data).to.include({
-          status: 'success'
+        expect(res.body).to.include({
+          status: 'success',
+          message: 'Article successfully updated'
         });
-        done();
+        // done();
       })
       .catch((err) => {
         console.log(err);
@@ -62,17 +63,16 @@ describe('delete article', () => {
       .delete('/api/v1/articles/11')
       .set('Content-Type', 'application/json')
       .set({ Authorization: token })
-      .field('articleid', '1')
+      // .field('articleid', '1')
       .field('title', 'my article edit')
       .field('content', 'lorem lorem lorem lorem updated')
       .then((res) => {
         expect(res.body).to.be.an('object');
         expect(res.status).to.equal(200);
+        expect(res.body.status).to.include('success');
         expect(res.body.data).to.include({
-          status: 'success',
-          message: 'Article Succesfully Deleted'
+          message: 'Article successfully deleted'
         });
-        done();
       })
       .catch((err) => {
         console.log(err);
@@ -97,11 +97,11 @@ describe('post comment', () => {
           message: 'Comment successfully created',
 
         });
-        done();
+        // done();
       })
       .catch((err) => {
         console.log(err);
       });
-    // done();
+    done();
   });
 });

@@ -74,18 +74,19 @@ exports.updateArticles = async (req, res) => {
     userid
   };
 
-  await articleModel.getArticles(article).then((result) => {
-    if (result.rowCount < 1) {
-      res.status(404).json({
+  await articleModel.oneArticle(article).then((result) => {
+    if (result[1] < 1) {
+      return res.status(404).json({
         status: 'error',
         message: 'Article not found'
       });
     }
-    if (result.rows[0].userid === article.userid) {
+    if (result[0].userid === article.userid) {
       articleModel.UpdateArticles(article).then((result2) => {
         // console.log(result2);
         return res.status(201).json({
-          status: 'Article successfully updated',
+          status: 'success',
+          message: 'Article successfully updated',
           data: {
             title: result2[0].title,
             Article: result2[0].content,
@@ -94,7 +95,7 @@ exports.updateArticles = async (req, res) => {
           },
         });
       });
-    } else if (result.rows[0].userid !== article.userid) {
+    } else if (result[0].userid !== article.userid) {
       res.status(401).json({
         status: 'error',
         message: 'you are unathorized to edit this'
@@ -118,7 +119,8 @@ exports.deleteArticles = async (req, res) => {
   };
   console.log(article.articleid);
 
-  await articleModel.oneArticle(article).then((result) => {
+  try {
+    const result = await articleModel.oneArticle(article);
     if (result[1] < 1) {
       res.status(404).json({
         status: 'error',
@@ -126,27 +128,29 @@ exports.deleteArticles = async (req, res) => {
       });
     }
     if (result[0].userid === article.userid) {
-      articleModel.DeleteArticle(article).then((result2) => {
-        console.log(result2.rowCount);
-        return res.status(200).json({
-          status: 'success',
-          data: {
-            message: 'Article successfully deleted',
-          }
+      const deletecomment = await articleModel.delcomment(article);
+      if (deletecomment) {
+        articleModel.DeleteArticle(article).then((result2) => {
+          console.log(result2.rowCount);
+          return res.status(200).json({
+            status: 'success',
+            data: {
+              message: 'Article successfully deleted',
+            }
+          });
         });
-      });
+      }
     } else if (result[0].userid !== article.userid) {
       return res.status(401).json({
         message: 'You are Unauthorize to perform this operation'
       });
     }
-  })
-    .catch((err) => {
-      res.status(500).json({
-        status: 'error',
-        message: `Error ${err} occured`
-      });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: `Error ${error} occured`
     });
+  }
 };
 
 exports.commentArticle = async (req, res) => {

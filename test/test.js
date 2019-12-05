@@ -4,6 +4,8 @@ const chaiHttp = require('chai-http');
 
 const app = require('../app');
 
+const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBoYXdhenp6eUBnbWFpbC5jb20iLCJ1c2VySWQiOjQsImxhc3ROYW1lIjoia2FyZWVtIiwiaWF0IjoxNTc1NTQwODE3LCJleHAiOjE1NzU2MjcyMTd9.IApIiBU1_rBlJUSANKlBVzg_fW8lWdngpdN_kI2WuFU';
+
 chai.use(chaiHttp);
 const { expect } = chai;
 
@@ -14,22 +16,25 @@ describe('Auth endpoint', () => {
       const user = {
         firstName: 'fawas',
         lastName: 'kareem',
-        email: 'test@gmail.com',
+        email: 'iam@gmail.com',
         password: '123456789',
         gender: 'male',
         jobRole: 'deveoper',
         department: 'tech',
         address: '5 oyinbo street, abuja',
-        isAdmin: true
       };
       chai.request(app)
         .post('/api/v1/auth/create-user')
-        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .set({ Authorization: token })
         .send(user)
         .then((res) => {
           expect(res.body).to.be.an('object');
           expect(res.status).to.equal(201);
-          expect(res.body.data).to.have.property('firstName');
+          expect(res.body.data).to.include({
+            firstname: 'fawas',
+            lastname: 'kareem'
+          });
         })
         .catch((err) => {
           throw err;
@@ -47,7 +52,7 @@ describe('Auth endpoint', () => {
       };
       chai.request(app)
         .post('/api/v1/auth/signin')
-        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
         .send(userDetails)
         .then((res) => {
           expect(res.body).to.be.an('object');
