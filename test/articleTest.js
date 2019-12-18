@@ -105,3 +105,23 @@ describe('post comment', () => {
     done();
   });
 });
+
+describe('get an articles', () => {
+  it('should get one article by id', (done) => {
+    chai.request(app)
+      .get('/api/v1/articles/1')
+      .set({ Authorization: token })
+      .then((res) => {
+        expect(res.body).to.be.an('object');
+        expect(res.status).to.be.equal(200);
+        expect(res.body.status).to.include('success');
+        expect(res.body.data).to.include({
+          id: 1
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    done();
+  });
+});

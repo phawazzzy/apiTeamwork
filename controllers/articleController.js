@@ -98,7 +98,8 @@ exports.updateArticles = async (req, res) => {
     } else if (result[0].userid !== article.userid) {
       res.status(401).json({
         status: 'error',
-        message: 'you are unathorized to edit this'
+        message: 'you are unathorized to edit this',
+        userid
       });
     }
   }).catch((err) => {

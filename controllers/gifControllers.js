@@ -32,7 +32,11 @@ exports.addGif = async (req, res) => {
   const userid = await getLogUser(req);
   const image = await cloudStorage.uploader.upload(file.tempFilePath, (error, result) => {
     if (error) {
-      res.status(400).json({ message: `${error} occured` });
+      res.status(400).json({
+        status: 'Error',
+        error,
+        message: 'Gif didnt upload sucessfully, Please check your internet connection',
+      });
     }
     return result;
   });
@@ -44,7 +48,6 @@ exports.addGif = async (req, res) => {
   };
   try {
     const result = await gifModel.gifPost(newGif);
-    console.log('tring to pull of');
     if (result) {
       console.log(result.rows[0]);
       return res.status(201).json({
@@ -52,7 +55,7 @@ exports.addGif = async (req, res) => {
         data: {
           gifId: result.rows[0].gifId,
           message: 'gif successfully uploaded',
-          createdOn: result.rows[0].dateCreated,
+          createdOn: result.rows[0].datecreated,
           title: result.rows[0].title,
           imageurl: result.rows[0].imageurl,
           public_id: result.rows[0].public_id,
@@ -62,8 +65,8 @@ exports.addGif = async (req, res) => {
     }
   } catch (error) {
     return res.status(401).json({
-      status: 'error',
-      message: 'i dey here',
+      status: 'Error',
+      message: `Error ${error} occured`,
       error
     });
   }
@@ -154,11 +157,13 @@ exports.commentGif = async (req, res) => {
   const dataToValidate = [
     check(req.body.comment).isLength({ min: 3 }),
   ];
-  const error = validationResult(dataToValidate);
-  if (!error.isEmpty()) {
-    res.status(400).json({
+  console.log((req.body.comment).length);
+  const errors = validationResult(dataToValidate);
+  if (!errors.isEmpty()) {
+    res.status(422).json({
       status: 'error',
-      message: 'you comment isnt up 3 words'
+      message: 'you comment isnt up 3 words',
+      errors: errors.array(),
     });
   }
   const userid = await getLogUser(req);

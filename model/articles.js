@@ -99,7 +99,7 @@ class ArticlesModel {
 
   static async delcomment(article) {
     try {
-      const commentToCom = 'delete from articlecomment where articleid = $1 returning ';
+      const commentToCom = 'delete from articlecomment where articleid = $1 returning *';
       const query = [article.articleid];
       const result = await pool.query(commentToCom, query);
       return result;
