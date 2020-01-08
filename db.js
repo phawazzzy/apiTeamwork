@@ -125,7 +125,6 @@ const gifComment = () => {
     });
 };
 
-
 module.exports = {
   createUsersTables,
   createGifsTables,
